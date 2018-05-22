@@ -1,8 +1,23 @@
-const request = require('request')
+const yargs = require('yargs')
+const geocode = require('./geocode')
 
-request({
-	url: 'http://maps.googleapis.com/maps/api/geocode/json?address=cebu',
-	json: true
-}, (err, response, body) => {
-	console.log(JSON.stringify(response, undefined, 2))
+const argv = yargs
+	.options({
+		a: {
+			demandOption: true,
+			alias: 'address',
+			describe: "Address",
+			string: true
+		}
+	})
+	.help()
+	.argv
+
+geocode.geocodeAddress(argv.a, (errMsg, response) => {
+	if (errMsg) {
+		console.log(errMsg)
+	} else {
+		console.log(`Address: ${response.address}`)
+		console.log(`Latitude: ${response.latitude}, Longitude: ${response.longitude}`)
+	}
 })
