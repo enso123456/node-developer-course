@@ -1,5 +1,6 @@
 const yargs = require('yargs')
 const geocode = require('./geocode')
+const forecast = require('./forecast')
 
 const argv = yargs
 	.options({
@@ -13,11 +14,17 @@ const argv = yargs
 	.help()
 	.argv
 
-geocode.geocodeAddress(argv.a, (errMsg, response) => {
+geocode.geocodeAddress(argv.a, (errMsg, address) => {
 	if (errMsg) {
 		console.log(errMsg)
 	} else {
-		console.log(`Address: ${response.address}`)
-		console.log(`Latitude: ${response.latitude}, Longitude: ${response.longitude}`)
+		forecast.getWeather(address.latitude, address.longitude, (err, temperature) => {
+			if (!err) {
+				console.log(`Address: ${address.address}`)
+				console.log(`It's currently : ${temperature}`)
+			} else {
+				console.log(errMsg)
+			}
+		})
 	}
 })
