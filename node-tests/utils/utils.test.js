@@ -30,3 +30,10 @@ it ('should verify display first and last name are set', () => {
 		.include({ firstName: 'Romeo', lastName: 'Enso'})
 		.a('object')
 })
+
+it('async call square', (done) => {
+	util.squareAsync(9, result => {
+		expect(result).to.be.equal(81)
+		done()
+	})
+})

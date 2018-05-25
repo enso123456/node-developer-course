@@ -10,3 +10,9 @@ module.exports.setName = (user, fullName) => {
 
 	return user
 }
+
+module.exports.squareAsync = (n, cb) => {
+	setTimeout(() => {
+		cb(n*n)
+	}, 1000)
+}
