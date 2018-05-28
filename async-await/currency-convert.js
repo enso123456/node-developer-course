@@ -7,19 +7,33 @@ const axios = require('axios')
 // @param (from, to)
 // return rates[to]
 
-const getExchangeRate = (from, to) => {
-	return axios.get(`https://exchangeratesapi.io/api/latest?&base=${from}`).then(resp => {
-		return resp.data.rates[to]
-	})
+const getExchangeRate = async (from, to) => {
+	try {
+		const resp = await axios.get(`https://exchangeratesapi.io/api/latest?&base=${from}`)
+		const rate =  resp.data.rates[to]	
+
+		if (rate) {
+			return rate
+		} else {
+			throw new Error() // call the error below
+		}
+	} catch (e) {
+		throw new Error (`Unable to get exchange for ${from} and ${to}`)
+	}
+	
 }
 
 
 // getCountries
 // @param currencyCode
-const getCountries = (currencyCode) => {
-	return axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`).then(resp => {
+const getCountries = async (currencyCode) => {
+	try {
+		const resp = await axios.get(`https://restcountries.eu/rest/v2/currency/${currencyCode}`)
 		return resp.data.map(country => country.name)
-	})
+	} catch (e) {
+		throw new Error(`Unable to get currency code ${currencyCode}`)
+	}
+
 }
 
 // convertCurrency 
@@ -47,6 +61,6 @@ const convertCurrencyAlt = async (from, to, amount) => {
 }
 
 
-convertCurrencyAlt('USsD', 'PHP', 100).then(resp => {
+convertCurrencyAlt('USD', 'PHP', 100).then(resp => {
 	console.log(resp)
-}).catch(e => console.log(e))
+}).catch(e => console.log(e.message))
